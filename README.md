@@ -8,4 +8,4 @@ Steps to run this project with frontend:
 3. Run `docker-compose -f docker-compose.full.yml up -d` command
 4. Open `http://localhost:8080`
 
-P.S. TicTacToe - frontend repo (`https://github.com/ddevilbb/tictactoe-frontend`)
+P.S. TicTacToe - frontend repo: [https://github.com/ddevilbb/tictactoe-frontend](https://github.com/ddevilbb/tictactoe-frontend)
