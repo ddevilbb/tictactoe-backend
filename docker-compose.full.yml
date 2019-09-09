@@ -1,0 +1,56 @@
+version: '2'
+services:
+  backend:
+    image: ddevilbb/tictactoe-backend:latest
+    env_file:
+      - .env.full
+    build:
+      context: ./
+      dockerfile: Dockerfile.full
+    restart: always
+    depends_on:
+      - mongo
+    links:
+      - mongo
+    networks:
+      default:
+        ipv4_address: 10.200.0.2
+
+  mongo:
+    image: mongo:4.2
+    environment:
+      - MONGO_PORT=${MONGO_PORT}
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_ROOT_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_ROOT_PASSWORD}
+      - MONGO_INITDB_DATABASE=${TYPEORM_DATABASE}
+      - APP_USERNAME=${TYPEORM_APP_USERNAME}
+      - APP_PASSWORD=${TYPEORM_APP_PASSWORD}
+    restart: always
+    volumes:
+      - ./mongo-user-entrypoint.sh:/docker-entrypoint-initdb.d/mongo-user-entrypoint.sh
+    networks:
+      default:
+        ipv4_address: 10.200.0.3
+
+  frontend:
+    image: ddevilbb/tictactoe-frontend:latest
+    build:
+      context: https://github.com/ddevilbb/tictactoe-frontend.git
+    restart: always
+    ports:
+      - 8080:80
+    depends_on:
+      - backend
+    links:
+      - backend
+    networks:
+      default:
+        ipv4_address: 10.200.0.4
+
+networks:
+  default:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.200.0.0/16
+          gateway: 10.200.0.1
